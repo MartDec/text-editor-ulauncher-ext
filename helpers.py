@@ -1,15 +1,18 @@
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.ExtensionCustomAction import ExtensionCustomAction
 from ulauncher.api.shared.action.DoNothingAction import DoNothingAction
+from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
+from pathlib import Path
 
 import os
 
 def getSubdirectories(path):
     results = []
+    path = str(path)
     items = os.listdir(path)
 
     for item in items:
-        fullPath = '%s/' % path + item if path[-1] != '/' else path + item
+        fullPath = ('%s/' % path) + item if path[-1:] != '/' else path + item
         if os.path.isdir(fullPath):
             results.append({
                 'name': item,
@@ -47,6 +50,15 @@ def getDefaultActions(data):
 
     return actions
 
+def getBackAction(currentTargetPath):
+    targetPath = Path('%s/../' % currentTargetPath).resolve()
+    return ExtensionResultItem(
+        icon='images/back.svg',
+        name='Go back',
+        description='Go to previous directory',
+        on_enter=RenderResultListAction(getDirectoryItems(targetPath))
+    )
+
 def getDirectoryItems(path):
     directories = getSubdirectories(path)
     results = []
@@ -58,6 +70,7 @@ def getDirectoryItems(path):
 
 def getResultItems(data):
     actions = getDefaultActions(data)
+    actions.append(getBackAction(data['path']))
     items = getDirectoryItems('%s/' % data['path'])
     actions.extend(items)
 
