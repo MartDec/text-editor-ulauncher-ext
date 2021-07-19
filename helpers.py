@@ -50,13 +50,19 @@ def getDefaultActions(data):
 
     return actions
 
-def getBackAction(currentTargetPath):
-    targetPath = Path('%s/../' % currentTargetPath).resolve()
+def getBackAction(data, workspaceRoot, i):
+    path = Path('%s/../' % data['path'])
+    previousDirData = {
+        'name': path.resolve().parts[-1],
+        'path': str(path.resolve())
+    }
+    i = i + 1
+    items = getResultItems(previousDirData, workspaceRoot, i)
     return ExtensionResultItem(
         icon='images/back.svg',
         name='Go back',
         description='Go to previous directory',
-        on_enter=RenderResultListAction(getDirectoryItems(targetPath))
+        on_enter=RenderResultListAction(items)
     )
 
 def getDirectoryItems(path):
@@ -68,9 +74,16 @@ def getDirectoryItems(path):
 
     return results
 
-def getResultItems(data):
-    actions = getDefaultActions(data)
-    actions.append(getBackAction(data['path']))
+def canAppendBackAction(data, workspaceRoot, i):
+    return (data['path'] != workspaceRoot) and i < 2
+
+def getResultItems(data, workspaceRoot, i=0):
+    actions = []
+    if data['path'] != workspaceRoot:
+        actions.extend(getDefaultActions(data))
+    if canAppendBackAction(data, workspaceRoot, i):
+        actions.append(getBackAction(data, workspaceRoot, i))
+
     items = getDirectoryItems('%s/' % data['path'])
     actions.extend(items)
 
