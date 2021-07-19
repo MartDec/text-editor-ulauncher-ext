@@ -1,0 +1,33 @@
+{
+  "required_api_version": "^2.0.0",
+  "name": "Text Editor Extension",
+  "description": "Open your folders directly in your text Editor",
+  "developer_name": "Martin Déclert",
+  "icon": "images/icon.svg",
+  "options": {
+    "query_debounce": 0.1
+  },
+  "preferences": [
+    {
+      "id": "editor_kw",
+      "type": "keyword",
+      "name": "Code",
+      "description": "Extension to open folders directly in your favourite editor",
+      "default_value": "code"
+      },
+      {
+        "id": "workspace_path",
+        "type": "input",
+        "name": "Default workspace absolute path",
+        "description": "The absolute root path of your working directories",
+        "default_value": "/workspace/"
+      },
+      {
+        "id": "application_bin",
+        "type": "input",
+        "name": "Your text editor bin path / executable",
+        "description": "Your text editor bin path / executable",
+        "default_value": "atom"
+      }
+  ]
+}
