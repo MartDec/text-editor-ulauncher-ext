@@ -32,7 +32,7 @@ class ItemEnterEventListener(EventListener):
         if 'open_editor' in data:
             subprocess.run([extension.preferences['application_bin'], data['path']])
         else:
-            actions = getResultItems(data, extension.preferences['workspace_path'])
+            actions = getResultItems(data)
             return RenderResultListAction(actions)
 
 

@@ -1,8 +1,6 @@
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.ExtensionCustomAction import ExtensionCustomAction
-from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.DoNothingAction import DoNothingAction
-from pathlib import Path
 
 import os
 
@@ -12,7 +10,6 @@ def getSubdirectories(path):
 
     for item in items:
         fullPath = '%s/' % path + item if path[-1] != '/' else path + item
-        print(fullPath)
         if os.path.isdir(fullPath):
             results.append({
                 'name': item,
@@ -29,7 +26,7 @@ def getResultItem(itemData):
         on_enter=ExtensionCustomAction(itemData, keep_app_open=True)
     )
 
-def getDefaultActions(data, workspaceRoot):
+def getDefaultActions(data):
     actions = [
         ExtensionResultItem(
             icon='images/technology.svg',
@@ -53,24 +50,6 @@ def getDefaultActions(data, workspaceRoot):
 
     return actions
 
-# def getDirectoryItems(root, workspaceRoot, avoid_loop=False):
-#     root = '%s/' % os.path.realpath(root)
-#     directories = getSubdirectories(root)
-#     results = []
-#     if root != workspaceRoot and not avoid_loop:
-#         results.append(ExtensionResultItem(
-#             icon='images/back.svg',
-#             name='Go back',
-#             description='Go back to parent directory',
-#             on_enter=RenderResultListAction(getDirectoryItems('%s/../' % root, workspaceRoot, not avoid_loop))
-#         ))
-# 
-#     for directory in directories:
-#         item = getResultItem(directory)
-#         results.append(item)
-# 
-#     return results
-
 def getDirectoryItems(path):
     directories = getSubdirectories(path)
     results = []
@@ -80,26 +59,8 @@ def getDirectoryItems(path):
 
     return results
 
-def getResultItems(data, workspaceRoot):
-    actions = getDefaultActions(data, workspaceRoot)
-
-    targetPath = Path('%s/../' % data['path'])
-    if (targetPath.resolve() != workspaceRoot):
-        backActions = []
-        backActions.extend(getDefaultActions(
-            { 'name': targetPath.name, 'path': targetPath.resolve() },
-            workspaceRoot
-        ))
-        actions.append(
-            ExtensionResultItem(
-                icon='images/back.svg',
-                name='Go back',
-                description='Go back to parent directory',
-                on_enter=RenderResultListAction(getDirectoryItems(targetPath.resolve))
-            )
-        )
-        backActions.extend(getDirectoryItems(targetPath.resolve))
-
+def getResultItems(data):
+    actions = getDefaultActions(data)
     items = getDirectoryItems('%s/' % data['path'])
     actions.extend(items)
 
