@@ -38,13 +38,10 @@ def getDefaultActions(data):
             icon='images/icon.svg',
             name='Open in your editor',
             description='Open directory %s in your editor' % data['name'],
-            on_enter=ExtensionCustomAction(
-                {
-                    'open_editor': True,
-                    'path': data['path']
-                },
-                keep_app_open=True
-            )
+            on_enter=ExtensionCustomAction({
+                'open_editor': True,
+                'path': data['path']
+            })
         )
     ]
 
